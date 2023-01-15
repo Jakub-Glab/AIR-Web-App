@@ -1,0 +1,146 @@
+<html>
+
+<head>
+    <style>
+        .grid {
+            margin: auto;
+            display: grid;
+            gap: 1px;
+            width: 25%;
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        div>div {
+            padding: 10px;
+            text-align: center;
+            background-color: rgb(255, 255, 255);
+        }
+        
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        table caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+        
+        table tr {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: .35em;
+        }
+        
+        table th,
+        table td {
+            padding: .625em;
+            text-align: center;
+        }
+        
+        table th {
+            font-size: .85em;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        
+        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+            table caption {
+                font-size: 1.3em;
+            }
+            table thead {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+            table tr {
+                border-bottom: 3px solid #ddd;
+                display: block;
+                margin-bottom: .625em;
+            }
+            table td {
+                border-bottom: 1px solid #ddd;
+                display: block;
+                font-size: .8em;
+                text-align: right;
+            }
+            table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            table td:last-child {
+                border-bottom: 0;
+            }
+        }
+    </style>
+    <script>
+        function fetchData() {
+            fetch("control.php?task=joystick")
+                .then(response => response.text())
+                .then(data => {
+                    var jsonData = JSON.parse(data.replace(/'/g, '"'));
+                    document.getElementById("counter_mid").innerHTML = jsonData.counter_mid;
+                    document.getElementById("counter_x").innerHTML = jsonData.counter_x;
+                    document.getElementById("counter_y").innerHTML = jsonData.counter_y;
+                });
+        }
+
+        function sendButton(button) {
+            fetch("control.php?task=click&button=" + button)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    fetchData();
+                });
+        }
+    </script>
+</head>
+
+<body onload="fetchData()">
+    <table>
+        <caption>Joystick counters:</caption>
+        <thead>
+            <tr>
+                <th scope="col">Counter Mid:</th>
+                <th scope="col">Counter X: </th>
+                <th scope="col">Counter Y: </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="counter_mid"></td>
+                <td id="counter_x"></td>
+                <td id="counter_y"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br><br><br><br>
+    <div class="grid">
+        <div></div>
+        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('up')">Up</button></div>
+        <div></div>
+        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('left')">Left</button></div>
+        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('mid')">Enter</button></div>
+        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('right')">Right</button></div>
+        <div></div>
+        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('down')">Down</button></div>
+        <div></div>
+    </div>
+
+</body>
+
+</html>
