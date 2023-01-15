@@ -5,14 +5,14 @@
     <style>
         body {
             display: flex;
-            background-color: #6600ff;
+            background-color: #1abc9c;
             font-family: Arial, sans-serif;
         }
         
         ul {
             list-style-type: none;
             flex-direction: column;
-            width: 10%;
+            width: 15%;
             padding: 10px;
         }
         
@@ -32,6 +32,7 @@
         iframe {
             background-color: #fff;
             flex: 1;
+            border-radius: 12px;
         }
         
         .button {
@@ -51,11 +52,11 @@
         }
         
         .button:hover {
-            background-color: #3e8e41
+            background-color: #12836c
         }
         
         .button:active {
-            background-color: #3e8e41;
+            background-color: #12836c;
             box-shadow: 0 5px #666;
             transform: translateY(4px);
         }
@@ -79,7 +80,7 @@
                 for (var j = 0; j < links.length; j++) {
                     links[j].style.backgroundColor = "#fff";
                 }
-                this.style.backgroundColor = "#3e8e41";
+                this.style.backgroundColor = "#12836c";
                 event.preventDefault();
                 var iframe = document.querySelector("iframe");
 

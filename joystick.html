@@ -2,6 +2,47 @@
 
 <head>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .header {
+            padding: 15px;
+            text-align: center;
+            background: #1abc9c;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+            width: 100px;
+            height: 100px;
+            margin: 3px;
+        }
+        
+        .button:hover {
+            background-color: #3e8e41
+        }
+        
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        
         .grid {
             margin: auto;
             display: grid;
@@ -111,6 +152,9 @@
 </head>
 
 <body onload="fetchData()">
+    <div class="header">
+        <h1>Joystick</h1>
+    </div>
     <table>
         <caption>Joystick counters:</caption>
         <thead>
@@ -131,13 +175,13 @@
     <br><br><br><br><br>
     <div class="grid">
         <div></div>
-        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('up')">Up</button></div>
+        <div> <button class="button" onclick="sendButton('up')">&#8593;</button></div>
         <div></div>
-        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('left')">Left</button></div>
-        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('mid')">Enter</button></div>
-        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('right')">Right</button></div>
+        <div> <button class="button" onclick="sendButton('left')">&#8592;</button></div>
+        <div> <button class="button" onclick="sendButton('mid')">&#8629;</button></div>
+        <div> <button class="button" onclick="sendButton('right')">&#8594;</button></div>
         <div></div>
-        <div> <button style="width: 100px; height: 100px;" onclick="sendButton('down')">Down</button></div>
+        <div> <button class="button" onclick="sendButton('down')">&#8595;</button></div>
         <div></div>
     </div>
 
