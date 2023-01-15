@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sensor Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <button id="start">Start</button>
+    <button id="clear-data">Clear Data</button><br><br>
+    <div id="graph-container" style="display: flex; flex-wrap: wrap;">
+        <div id="pressure-graph" style="order: 1; width: 33%;"></div>
+        <div id="temperature-graph" style="order: 2; width: 33%;"></div>
+        <div id="humidity-graph" style="order: 3; width: 33%;"></div>
+    </div>
+    <script>
+        // Initialize variables for the graphs
+        var pressureGraph, temperatureGraph, humidityGraph;
+        var pressureData = [],
+            temperatureData = [],
+            humidityData = [];
+        var pressureLabels = [],
+            temperatureLabels = [],
+            humidityLabels = [];
+        var pressureUnits = "Pa",
+            temperatureUnits = "C",
+            humidityUnits = "Prcnt";
+        var isDrawing = false;
+
+        // Fetch data from the control.php script
+        function fetchData() {
+            var url = "control.php?task=sensors&pressure=" + pressureUnits + "&temperature=" + temperatureUnits + "&humidity=" + humidityUnits;
+            fetch(url)
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    // Update the data and labels for the graphs
+                    pressureData.push(data.Pressure);
+                    temperatureData.push(data.Temperature);
+                    humidityData.push(data.Humidity);
+                    var date = new Date();
+                    pressureLabels.push(date.toLocaleTimeString());
+                    temperatureLabels.push(date.toLocaleTimeString());
+                    humidityLabels.push(date.toLocaleTimeString());
+                    // Update the graphs
+                    updateGraphs();
+                })
+                .catch(function(error) {
+                    console.log("Error fetching data: " + error);
+                });
+        }
+
+        // Update the graphs with the new data
+        function updateGraphs() {
+            pressureGraph.data.datasets[0].data = pressureData;
+            pressureGraph.data.labels = pressureLabels;
+            pressureGraph.update();
+
+            temperatureGraph.data.datasets[0].data = temperatureData;
+            temperatureGraph.data.labels = temperatureLabels;
+            temperatureGraph.update();
+
+            humidityGraph.data.datasets[0].data = humidityData;
+            humidityGraph.data.labels = humidityLabels;
+            humidityGraph.update();
+        }
+        // Create the pressure graph
+        var canvas = document.createElement("canvas");
+        canvas.id = "pressure-canvas";
+        document.getElementById("pressure-graph").appendChild(canvas);
+        var ctx = document.getElementById('pressure-canvas').getContext('2d');
+        pressureGraph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: pressureLabels,
+                datasets: [{
+                    label: 'Pressure (' + pressureUnits + ')',
+                    data: pressureData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Create the temperature graph
+        var canvas = document.createElement("canvas");
+        canvas.id = "temperature-canvas";
+        document.getElementById("temperature-graph").appendChild(canvas);
+        ctx = document.getElementById('temperature-canvas').getContext('2d');
+        temperatureGraph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: temperatureLabels,
+                datasets: [{
+                    label: 'Temperature (' + temperatureUnits + ')',
+                    data: temperatureData,
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Create the humidity graph
+        var canvas = document.createElement("canvas");
+        canvas.id = "humidity-canvas";
+        document.getElementById("humidity-graph").appendChild(canvas);
+        ctx = document.getElementById('humidity-canvas').getContext('2d');
+        humidityGraph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: humidityLabels,
+                datasets: [{
+                    label: 'Humidity (' + humidityUnits + ')',
+                    data: humidityData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Add buttons to change units
+        var pressureUnitsBtn = document.createElement("BUTTON");
+        pressureUnitsBtn.innerHTML = "Change units";
+        pressureUnitsBtn.onclick = function() {
+            if (pressureUnits === "Pa") {
+                pressureUnits = "Hg";
+            } else {
+                pressureUnits = "Pa";
+            }
+            pressureLabels = [];
+            pressureGraph.data.labels = pressureLabels;
+            pressureData = [];
+            pressureGraph.data.datasets[0].data = pressureData;
+            pressureGraph.data.datasets[0].label = 'Pressure (' + pressureUnits + ')';
+            pressureGraph.update();
+        };
+        document.getElementById("pressure-graph").appendChild(pressureUnitsBtn);
+
+        var temperatureUnitsBtn = document.createElement("BUTTON");
+        temperatureUnitsBtn.innerHTML = "Change units";
+        temperatureUnitsBtn.onclick = function() {
+            if (temperatureUnits === "C") {
+                temperatureUnits = "F";
+            } else {
+                temperatureUnits = "C";
+            }
+            temperatureData = [];
+            temperatureLabels = [];
+            temperatureGraph.data.labels = temperatureLabels;
+            temperatureGraph.data.datasets[0].data = temperatureData;
+            temperatureGraph.data.datasets[0].label = 'Temperature (' + temperatureUnits + ')';
+            temperatureGraph.update();
+        };
+        document.getElementById("temperature-graph").appendChild(temperatureUnitsBtn);
+
+        var humidityUnitsBtn = document.createElement("BUTTON");
+        humidityUnitsBtn.innerHTML = "Change units";
+        humidityUnitsBtn.onclick = function() {
+            if (humidityUnits === "Prcnt") {
+                humidityUnits = "Norm";
+            } else {
+                humidityUnits = "Prcnt";
+            }
+            humidityData = [];
+            humidityLabels = [];
+            humidityGraph.data.labels = humidityLabels;
+            humidityGraph.data.datasets[0].data = humidityData;
+            humidityGraph.data.datasets[0].data = humidityData;
+            humidityGraph.update();
+        };
+        document.getElementById("humidity-graph").appendChild(humidityUnitsBtn);
+
+        // Add start/stop button
+        document.getElementById("start").onclick = function() {
+            this.onclick = function() {
+                if (isDrawing) {
+                    clearInterval(intervalId);
+                    this.innerHTML = "Start";
+                    isDrawing = false;
+                } else {
+                    intervalId = setInterval(fetchData, 1000);
+                    this.innerHTML = "Stop";
+                    isDrawing = true;
+                }
+            };
+        }
+
+        document.getElementById("clear-data").onclick = function() {
+            pressureData = [];
+            pressureLabels = [];
+            pressureGraph.data.labels = pressureLabels;
+            pressureGraph.data.datasets[0].data = pressureData;
+            pressureGraph.update();
+
+            temperatureData = [];
+            temperatureLabels = [];
+            temperatureGraph.data.labels = temperatureLabels;
+            temperatureGraph.data.datasets[0].data = temperatureData;
+            temperatureGraph.update();
+
+            humidityData = [];
+            humidityLabels = [];
+            humidityGraph.data.labels = humidityLabels;
+            humidityGraph.data.datasets[0].data = humidityData;
+            humidityGraph.update();
+        }
+
+        document.getElementById("pressure-graph").addEventListener("click", function() {
+            document.getElementById("pressure-graph").style.width = "100%";
+            document.getElementById("pressure-graph").style.order = "1";
+            document.getElementById("temperature-graph").style.width = "33%";
+            document.getElementById("temperature-graph").style.order = "2";
+            document.getElementById("humidity-graph").style.width = "33%";
+            document.getElementById("humidity-graph").style.order = "3";
+        });
+
+        document.getElementById("temperature-graph").addEventListener("click", function() {
+            document.getElementById("temperature-graph").style.width = "100%";
+            document.getElementById("temperature-graph").style.order = "1";
+            document.getElementById("pressure-graph").style.width = "33%";
+            document.getElementById("pressure-graph").style.order = "2";
+            document.getElementById("humidity-graph").style.width = "33%";
+            document.getElementById("humidity-graph").style.order = "3";
+        });
+
+        document.getElementById("humidity-graph").addEventListener("click", function() {
+            document.getElementById("humidity-graph").style.width = "100%";
+            document.getElementById("humidity-graph").style.order = "1";
+            document.getElementById("pressure-graph").style.width = "33%";
+            document.getElementById("pressure-graph").style.order = "2";
+            document.getElementById("temperature-graph").style.width = "33%";
+            document.getElementById("temperature-graph").style.order = "3";
+        });
+    </script>
+</body>
+
+</html>
