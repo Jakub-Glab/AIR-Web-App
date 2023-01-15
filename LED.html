@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <title>Raspberry PI SenseHat LED Control</title>
+    <style>
+        /* Styles for the LED grid */
+        
+        .led-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -2px;
+        }
+        
+        .led {
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            margin: 2px;
+            border-radius: 5px;
+        }
+        /* Styles for the color sliders */
+        
+        .slider-container {
+            align-items: center;
+        }
+        
+        .slider {
+            width: 200px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Raspberry PI SenseHat LED Control</h1>
+    <div class="led-grid">
+        <!-- 8x8 grid of LED squares -->
+    </div>
+    <div class="slider-container">
+        <label for="r-slider">R:</label>
+        <input type="range" min="0" max="255" value="0" class="slider" id="r-slider"><br><br>
+        <label for="g-slider">G:</label>
+        <input type="range" min="0" max="255" value="0" class="slider" id="g-slider"><br><br>
+        <label for="b-slider">B:</label>
+        <input type="range" min="0" max="255" value="0" class="slider" id="b-slider"><br><br>
+    </div>
+    <div class="button-container">
+        <button id="clear-button">Clear</button>
+        <button id="random-button">Random</button>
+        <button id="save-button">Save</button>
+    </div>
+    <script src="jquery-3.6.3.min.js"></script>
+    <script>
+        //create the 8x8 grid of LED squares
+        for (let i = 0; i < 8; i++) {
+            let row = document.createElement("div");
+            row.classList.add("row");
+            for (let j = 0; j < 8; j++) {
+                let led = document.createElement("div");
+                led.classList.add("led");
+                led.id = "led-" + i + "-" + j;
+                row.appendChild(led);
+            }
+            document.querySelector(".led-grid").appendChild(row);
+        }
+
+        // Get references to all the LED squares and the color sliders
+        var ledSquares = document.querySelectorAll('.led');
+        var rSlider = document.getElementById('r-slider');
+        var gSlider = document.getElementById('g-slider');
+        var bSlider = document.getElementById('b-slider');
+        var clearButton = document.getElementById('clear-button');
+        var randomButton = document.getElementById('random-button');
+        var saveButton = document.getElementById('save-button');
+        var selectedLed = null;
+
+        // Add click event listeners to all the LED squares
+        ledSquares.forEach(function(led) {
+            led.addEventListener('click', function() {
+                // Deselect the previously selected LED
+                if (selectedLed) {
+                    selectedLed.style.border = "1px solid black";
+                    selectedLed.classList.remove('selected');
+                }
+                // Select the current LED
+                selectedLed = this;
+                selectedLed.classList.add('selected');
+                //bold the border selected LED
+                selectedLed.style.border = "2px solid black";
+                // Update the color of the selected LED using the current slider values
+                updateLedColor();
+            });
+        });
+
+        // Add change event listeners to all the color sliders
+        rSlider.addEventListener('input', updateLedColor);
+        gSlider.addEventListener('input', updateLedColor);
+        bSlider.addEventListener('input', updateLedColor);
+
+        function updateLedColor() {
+            // Make sure a LED is selected
+            if (!selectedLed) {
+                return;
+            }
+            // Get the current slider values
+            var r = rSlider.value;
+            var g = gSlider.value;
+            var b = bSlider.value;
+            selectedLed.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        randomButton.addEventListener('click', function() {
+            // Set the background color of all the LED squares to a random color
+            ledSquares.forEach(function(led) {
+                let randomColor = 'rgb(' + getRandomInt(255) + ',' + getRandomInt(255) + ',' + getRandomInt(255) + ')';
+                led.style.backgroundColor = randomColor;
+            });
+        });
+
+        // Add click event listeners to the buttons
+        clearButton.addEventListener('click', function() {
+            // Clear the background color of all the LED squares
+            if (selectedLed) {
+                selectedLed.style.border = "1px solid black";
+                selectedLed.classList.remove('selected');
+            }
+            ledSquares.forEach(function(led) {
+                led.style.backgroundColor = 'rgb(0,0,0)';
+            });
+        });
+
+        // Get the current state of the LED's
+        fetch('LED.php')
+            .then(response => response.json())
+            .then(data => {
+                console.log('LED colors:', data);
+                // Update the HTML with the current LED colors
+                data.forEach(function(led) {
+                    let x = led[0];
+                    let y = led[1];
+                    let r = led[2];
+                    let g = led[3];
+                    let b = led[4];
+                    let color = `rgb(${r}, ${g}, ${b})`;
+                    let ledSquare = document.getElementById(`led-${x}-${y}`);
+                    ledSquare.style.backgroundColor = color;
+                });
+            })
+            .catch(error => {
+                console.error('Error retrieving LED colors:', error);
+            });
+
+        // Add click event listener to the save button
+        saveButton.addEventListener('click', function() {
+            // Create a JSON array containing the current LED colors
+            let ledColors = [];
+            ledSquares.forEach(function(led) {
+                let x = parseInt(led.id.split('-')[1]);
+                let y = parseInt(led.id.split('-')[2]);
+                let r = parseInt(led.style.backgroundColor.slice(4, -1).split(',')[0]);
+                let g = parseInt(led.style.backgroundColor.slice(4, -1).split(',')[1]);
+                let b = parseInt(led.style.backgroundColor.slice(4, -1).split(',')[2]);
+                ledColors.push([x, y, r, g, b]);
+            });
+            // Send a PUT request to the PHP script
+            $.ajax({
+                url: 'LED.php',
+                type: 'PUT',
+                data: JSON.stringify(ledColors),
+                contentType: 'application/json',
+                success: function(data) {
+                    console.log('LED colors saved:', data);
+
+
+                },
+                error: function(error) {
+                    console.error('Error saving LED colors:', error);
+                }
+            })
+        });
+    </script>
+</body>
