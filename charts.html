@@ -6,18 +6,81 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js"></script>
     <style>
-
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .header {
+            padding: 15px;
+            text-align: center;
+            background: #1abc9c;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+            margin: 3px;
+        }
+        
+        .button:hover {
+            background-color: #3e8e41
+        }
+        
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        
+        .small-button {
+            width: 120px;
+            height: 30px;
+            font-size: 12px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px #666;
+            transform: translateY(2px);
+            margin: 3px;
+        }
+        
+        .small-button:hover {
+            background-color: #7edd81;
+        }
+        
+        .small-button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 2px #666;
+            transform: translateY(2px);
+        }
     </style>
 </head>
 
 <body>
-    <button id="start">Start</button>
-    <button id="clear-data">Clear Data</button><br><br>
+    <div class="header">
+        <h1>Sensor Data Charts</h1>
+    </div>
     <div id="graph-container" style="display: flex; flex-wrap: wrap;">
         <div id="pressure-graph" style="order: 1; width: 33%;"></div>
         <div id="temperature-graph" style="order: 2; width: 33%;"></div>
         <div id="humidity-graph" style="order: 3; width: 33%;"></div>
     </div>
+    <br><br>
+    <button class="button" id="start">Start</button>
+    <button class="button" style="background-color: beige; color: black;" id="clear-data">Clear Data</button><br><br>
     <script>
         // Initialize variables for the graphs
         var pressureGraph, temperatureGraph, humidityGraph;
@@ -150,6 +213,7 @@
 
         // Add buttons to change units
         var pressureUnitsBtn = document.createElement("BUTTON");
+        pressureUnitsBtn.className = "small-button";
         pressureUnitsBtn.innerHTML = "Change units";
         pressureUnitsBtn.onclick = function() {
             if (pressureUnits === "Pa") {
@@ -167,6 +231,7 @@
         document.getElementById("pressure-graph").appendChild(pressureUnitsBtn);
 
         var temperatureUnitsBtn = document.createElement("BUTTON");
+        temperatureUnitsBtn.className = "small-button";
         temperatureUnitsBtn.innerHTML = "Change units";
         temperatureUnitsBtn.onclick = function() {
             if (temperatureUnits === "C") {
@@ -184,6 +249,7 @@
         document.getElementById("temperature-graph").appendChild(temperatureUnitsBtn);
 
         var humidityUnitsBtn = document.createElement("BUTTON");
+        humidityUnitsBtn.className = "small-button";
         humidityUnitsBtn.innerHTML = "Change units";
         humidityUnitsBtn.onclick = function() {
             if (humidityUnits === "Prcnt") {
@@ -235,32 +301,32 @@
             humidityGraph.update();
         }
 
-        document.getElementById("pressure-graph").addEventListener("click", function() {
-            document.getElementById("pressure-graph").style.width = "100%";
-            document.getElementById("pressure-graph").style.order = "1";
-            document.getElementById("temperature-graph").style.width = "33%";
-            document.getElementById("temperature-graph").style.order = "2";
-            document.getElementById("humidity-graph").style.width = "33%";
-            document.getElementById("humidity-graph").style.order = "3";
-        });
+        // document.getElementById("pressure-graph").addEventListener("click", function() {
+        //     document.getElementById("pressure-graph").style.width = "100%";
+        //     document.getElementById("pressure-graph").style.order = "1";
+        //     document.getElementById("temperature-graph").style.width = "33%";
+        //     document.getElementById("temperature-graph").style.order = "2";
+        //     document.getElementById("humidity-graph").style.width = "33%";
+        //     document.getElementById("humidity-graph").style.order = "3";
+        // });
 
-        document.getElementById("temperature-graph").addEventListener("click", function() {
-            document.getElementById("temperature-graph").style.width = "100%";
-            document.getElementById("temperature-graph").style.order = "1";
-            document.getElementById("pressure-graph").style.width = "33%";
-            document.getElementById("pressure-graph").style.order = "2";
-            document.getElementById("humidity-graph").style.width = "33%";
-            document.getElementById("humidity-graph").style.order = "3";
-        });
+        // document.getElementById("temperature-graph").addEventListener("click", function() {
+        //     document.getElementById("temperature-graph").style.width = "100%";
+        //     document.getElementById("temperature-graph").style.order = "1";
+        //     document.getElementById("pressure-graph").style.width = "33%";
+        //     document.getElementById("pressure-graph").style.order = "2";
+        //     document.getElementById("humidity-graph").style.width = "33%";
+        //     document.getElementById("humidity-graph").style.order = "3";
+        // });
 
-        document.getElementById("humidity-graph").addEventListener("click", function() {
-            document.getElementById("humidity-graph").style.width = "100%";
-            document.getElementById("humidity-graph").style.order = "1";
-            document.getElementById("pressure-graph").style.width = "33%";
-            document.getElementById("pressure-graph").style.order = "2";
-            document.getElementById("temperature-graph").style.width = "33%";
-            document.getElementById("temperature-graph").style.order = "3";
-        });
+        // document.getElementById("humidity-graph").addEventListener("click", function() {
+        //     document.getElementById("humidity-graph").style.width = "100%";
+        //     document.getElementById("humidity-graph").style.order = "1";
+        //     document.getElementById("pressure-graph").style.width = "33%";
+        //     document.getElementById("pressure-graph").style.order = "2";
+        //     document.getElementById("temperature-graph").style.width = "33%";
+        //     document.getElementById("temperature-graph").style.order = "3";
+        // });
     </script>
 </body>
 

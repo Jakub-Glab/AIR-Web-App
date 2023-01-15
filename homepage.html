@@ -33,15 +33,41 @@
             background-color: #fff;
             flex: 1;
         }
+        
+        .button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: rgb(0, 0, 0);
+            background-color: #ffffff;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+            margin: 3px;
+        }
+        
+        .button:hover {
+            background-color: #3e8e41
+        }
+        
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
     </style>
 </head>
 
 <body>
     <ul>
-        <li><a href="LED.html" target="content">LED</a></li>
-        <li><a href="charts.html" target="content">Graphs</a></li>
-        <li><a href="joystick.html" target="content">Joystick</a></li>
-        <li><a href="table.html" target="content">Table</a></li>
+        <li><a class="button" href="LED.html" target="content">LED</a></li>
+        <li><a class="button" href="charts.html" target="content">Graphs</a></li>
+        <li><a class="button" href="joystick.html" target="content">Joystick</a></li>
+        <li><a class="button" href="table.html" target="content">Table</a></li>
     </ul>
     <iframe name="content"></iframe>
     <script>
@@ -51,20 +77,11 @@
         for (var i = 0; i < links.length; i++) {
             links[i].addEventListener("click", function(event) {
                 for (var j = 0; j < links.length; j++) {
-                    links[j].style.border = "none";
-                }
-                this.style.border = "2px solid #000";
-                for (var j = 0; j < links.length; j++) {
-                    links[j].style.fontWeight = "normal";
-                }
-                this.style.fontWeight = "bold";
-                event.preventDefault();
-                var iframe = document.querySelector("iframe");
-                for (var j = 0; j < links.length; j++) {
                     links[j].style.backgroundColor = "#fff";
                 }
-                this.style.backgroundColor = "#ccffcc";
-
+                this.style.backgroundColor = "#3e8e41";
+                event.preventDefault();
+                var iframe = document.querySelector("iframe");
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", this.href, true);
