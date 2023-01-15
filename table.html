@@ -88,7 +88,18 @@
     </style>
     <script src="jquery-3.6.3.min.js"></script>
     <script>
-        setInterval(function() {
+        let interval;
+
+        function start() {
+            if (document.getElementById("intervalTime").value < 100) {
+                document.getElementById("intervalTime").value = 100;
+            }
+            sampling = document.getElementById("intervalTime").value;
+            clearInterval(interval);
+            interval = setInterval(fetch, sampling);
+        }
+
+        function fetch() {
             $.ajax({
                 type: "GET",
                 url: "control.php?task=table",
@@ -104,10 +115,9 @@
                     $("#counter_mid").html(jsonData.counter_mid);
                     $("#counter_x").html(jsonData.counter_x);
                     $("#counter_y").html(jsonData.counter_y);
-
                 }
             });
-        }, 1000);
+        }
     </script>
 </head>
 
@@ -144,6 +154,11 @@
             </tr>
         </tbody>
     </table>
+    <form>
+        <label for="interval">Enter the sampling time in ms:</label>
+        <input type="text" id="intervalTime" name="intervalTime" value="1000">
+        <input type="button" value="Submit" onclick="start()">
+    </form>
 </body>
 
 </html>

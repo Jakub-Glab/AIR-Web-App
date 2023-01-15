@@ -81,6 +81,9 @@
     <br><br>
     <button class="button" id="start">Start</button>
     <button class="button" style="background-color: beige; color: black;" id="clear-data">Clear Data</button><br><br>
+    <label for="interval">Enter sampling time in ms:</label>
+    <input type="text" id="interval" name="interval" value="1000">
+    <input type="button" value="Submit" onclick="updateSamplingTime()">
     <script>
         // Initialize variables for the graphs
         var pressureGraph, temperatureGraph, humidityGraph;
@@ -94,6 +97,11 @@
             temperatureUnits = "C",
             humidityUnits = "Prcnt";
         var isDrawing = false;
+
+        let intervalId;
+        let samplingTime = 1000;
+
+
 
         // Fetch data from the control.php script
         function fetchData() {
@@ -117,6 +125,19 @@
                 .catch(function(error) {
                     console.log("Error fetching data: " + error);
                 });
+        }
+
+        function updateSamplingTime() {
+            samplingTime = document.getElementById("interval").value;
+            if (samplingTime < 100) {
+                alert("Minimum sampling time is 100ms");
+                samplingTime = 100;
+                document.getElementById("interval").value = samplingTime;
+            }
+            if (isDrawing) {
+                clearInterval(intervalId);
+                intervalId = setInterval(fetchData, samplingTime);
+            }
         }
 
         // Update the graphs with the new data
@@ -274,7 +295,7 @@
                     this.innerHTML = "Start";
                     isDrawing = false;
                 } else {
-                    intervalId = setInterval(fetchData, 1000);
+                    intervalId = setInterval(fetchData, samplingTime);
                     this.innerHTML = "Stop";
                     isDrawing = true;
                 }
@@ -300,33 +321,6 @@
             humidityGraph.data.datasets[0].data = humidityData;
             humidityGraph.update();
         }
-
-        // document.getElementById("pressure-graph").addEventListener("click", function() {
-        //     document.getElementById("pressure-graph").style.width = "100%";
-        //     document.getElementById("pressure-graph").style.order = "1";
-        //     document.getElementById("temperature-graph").style.width = "33%";
-        //     document.getElementById("temperature-graph").style.order = "2";
-        //     document.getElementById("humidity-graph").style.width = "33%";
-        //     document.getElementById("humidity-graph").style.order = "3";
-        // });
-
-        // document.getElementById("temperature-graph").addEventListener("click", function() {
-        //     document.getElementById("temperature-graph").style.width = "100%";
-        //     document.getElementById("temperature-graph").style.order = "1";
-        //     document.getElementById("pressure-graph").style.width = "33%";
-        //     document.getElementById("pressure-graph").style.order = "2";
-        //     document.getElementById("humidity-graph").style.width = "33%";
-        //     document.getElementById("humidity-graph").style.order = "3";
-        // });
-
-        // document.getElementById("humidity-graph").addEventListener("click", function() {
-        //     document.getElementById("humidity-graph").style.width = "100%";
-        //     document.getElementById("humidity-graph").style.order = "1";
-        //     document.getElementById("pressure-graph").style.width = "33%";
-        //     document.getElementById("pressure-graph").style.order = "2";
-        //     document.getElementById("temperature-graph").style.width = "33%";
-        //     document.getElementById("temperature-graph").style.order = "3";
-        // });
     </script>
 </body>
 
