@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <title>My HTML Document</title>
+    <style>
+        body {
+            display: flex;
+            background-color: #6600ff;
+        }
+        
+        ul {
+            list-style-type: none;
+            flex-direction: column;
+            width: 10%;
+            padding: 10px;
+        }
+        
+        ul li {
+            margin: 10px;
+        }
+        
+        a {
+            text-decoration: none;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            display: block;
+            width: 80%;
+        }
+        
+        iframe {
+            background-color: #fff;
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li><a href="LED.html" target="content">LED</a></li>
+        <li><a href="charts.html" target="content">Graphs</a></li>
+        <li><a href="joystick.html" target="content">Joystick</a></li>
+        <li><a href="table.html" target="content">Home</a></li>
+    </ul>
+    <iframe name="content"></iframe>
+    <script>
+        var links = document.getElementsByTagName("a");
+        for (var i = 0; i < links.length; i++) {
+            links[i].addEventListener("click", function(event) {
+                event.preventDefault();
+                var iframe = document.querySelector("iframe");
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", this.href, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        iframe.contentDocument.open();
+                        iframe.contentDocument.write(xhr.responseText);
+                        iframe.contentDocument.close();
+                    }
+                }
+                xhr.send();
+            });
+        }
+    </script>
+
+</html>
