@@ -1,0 +1,133 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        table caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+        
+        table tr {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: .35em;
+        }
+        
+        table th,
+        table td {
+            padding: .625em;
+            text-align: center;
+        }
+        
+        table th {
+            font-size: .85em;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        
+        @media screen and (max-width: 600px) {
+            table {
+                border: 0;
+            }
+            table caption {
+                font-size: 1.3em;
+            }
+            table thead {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+            table tr {
+                border-bottom: 3px solid #ddd;
+                display: block;
+                margin-bottom: .625em;
+            }
+            table td {
+                border-bottom: 1px solid #ddd;
+                display: block;
+                font-size: .8em;
+                text-align: right;
+            }
+            table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            table td:last-child {
+                border-bottom: 0;
+            }
+        }
+    </style>
+    <script src="jquery-3.6.3.min.js"></script>
+    <script>
+        setInterval(function() {
+            $.ajax({
+                type: "GET",
+                url: "control.php?task=table",
+                success: function(data) {
+                    var jsonData = JSON.parse(data.replace(/'/g, '"'));
+                    console.log(jsonData);
+                    $("#roll").html(jsonData.Roll + "°");
+                    $("#pitch").html(jsonData.Pitch + "°");
+                    $("#yaw").html(jsonData.Yaw + "°");
+                    $("#pressure").html(jsonData.Pressure + "hPa");
+                    $("#temperature").html(jsonData.Temperature + "°C");
+                    $("#humidity").html(jsonData.Humidity + "%");
+                    $("#counter_mid").html(jsonData.counter_mid);
+                    $("#counter_x").html(jsonData.counter_x);
+                    $("#counter_y").html(jsonData.counter_y);
+
+                }
+            });
+        }, 1000);
+    </script>
+</head>
+
+<body>
+    <table>
+        <caption>All sensors data</caption>
+        <thead>
+            <tr>
+                <th scope="col">Roll:</th>
+                <th scope="col">Pitch: </th>
+                <th scope="col">Yaw: </th>
+                <th scope="col">Pressure:</th>
+                <th scope="col">Temperature: </th>
+                <th scope="col">Humidity: </th>
+                <th scope="col">Counter Mid:</th>
+                <th scope="col">Counter X: </th>
+                <th scope="col">Counter Y: </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="roll"></td>
+                <td id="pitch"></td>
+                <td id="yaw"></td>
+                <td id="pressure"></td>
+                <td id="temperature"></td>
+                <td id="humidity"></td>
+                <td id="counter_mid"></td>
+                <td id="counter_x"></td>
+                <td id="counter_y"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
