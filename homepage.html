@@ -6,6 +6,7 @@
         body {
             display: flex;
             background-color: #6600ff;
+            font-family: Arial, sans-serif;
         }
         
         ul {
@@ -40,15 +41,30 @@
         <li><a href="LED.html" target="content">LED</a></li>
         <li><a href="charts.html" target="content">Graphs</a></li>
         <li><a href="joystick.html" target="content">Joystick</a></li>
-        <li><a href="table.html" target="content">Home</a></li>
+        <li><a href="table.html" target="content">Table</a></li>
     </ul>
     <iframe name="content"></iframe>
     <script>
+        var iframe = document.querySelector("iframe");
+        iframe.src = "LED.html";
         var links = document.getElementsByTagName("a");
         for (var i = 0; i < links.length; i++) {
             links[i].addEventListener("click", function(event) {
+                for (var j = 0; j < links.length; j++) {
+                    links[j].style.border = "none";
+                }
+                this.style.border = "2px solid #000";
+                for (var j = 0; j < links.length; j++) {
+                    links[j].style.fontWeight = "normal";
+                }
+                this.style.fontWeight = "bold";
                 event.preventDefault();
                 var iframe = document.querySelector("iframe");
+                for (var j = 0; j < links.length; j++) {
+                    links[j].style.backgroundColor = "#fff";
+                }
+                this.style.backgroundColor = "#ccffcc";
+
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", this.href, true);
